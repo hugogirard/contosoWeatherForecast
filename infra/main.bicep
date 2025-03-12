@@ -124,6 +124,7 @@ module webfront 'br/public:avm/res/web/site:0.15.0' = {
     name: 'front-${suffix}'
     kind: 'app,linux'
     serverFarmResourceId: aspfront.outputs.resourceId
+    virtualNetworkSubnetId: vnet.outputs.subnetResourceIds[0]
   }
 }
 
@@ -138,6 +139,24 @@ module backend 'br/public:avm/res/web/site:0.15.0' = {
     privateEndpoints: [
       {
         subnetResourceId: vnet.outputs.subnetResourceIds[1]
+      }
+    ]
+  }
+}
+
+/*  Create the private DNS Zone */
+
+module privateDnsZoneweb 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
+  name: 'privateDnsZoneweb'
+  scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    rg
+  ]
+  params: {
+    name: 'privatelink.azurewebsites.net'
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: vnet.outputs.resourceId
       }
     ]
   }
