@@ -83,7 +83,7 @@ module aspfront 'br/public:avm/res/web/serverfarm:0.4.1' = {
     name: 'asp-back-${suffix}'
     kind: 'linux'
     skuCapacity: 1
-    skuName: 'Basic'
+    skuName: 'B2'
   }
 }
 
@@ -94,6 +94,6 @@ module aspbackend 'br/public:avm/res/web/serverfarm:0.4.1' = {
     name: 'asp-front-${suffix}'
     kind: 'linux'
     skuCapacity: 1
-    skuName: 'Basic'
+    skuName: 'B2'
   }
 }
