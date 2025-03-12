@@ -79,9 +79,6 @@ var suffix = uniqueString(rg.outputs.resourceId)
 module aspfront 'br/public:avm/res/web/serverfarm:0.4.1' = {
   name: 'aspfrontend'
   scope: resourceGroup(resourceGroupName)
-  dependsOn: [
-    rg
-  ]
   params: {
     name: 'asp-back-${suffix}'
     kind: 'linux'
@@ -93,9 +90,6 @@ module aspfront 'br/public:avm/res/web/serverfarm:0.4.1' = {
 module aspbackend 'br/public:avm/res/web/serverfarm:0.4.1' = {
   name: 'aspbackend'
   scope: resourceGroup(resourceGroupName)
-  dependsOn: [
-    rg
-  ]
   params: {
     name: 'asp-front-${suffix}'
     kind: 'linux'
