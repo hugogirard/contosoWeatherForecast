@@ -15,6 +15,9 @@ param subnetVnetIntegrationAddressPrefix string
 @description('The subnet for the private endpoint of the address prefix')
 param subnetPrivateEndpointAddressPrefix string
 
+@description('The subnet for agent of the address prefix')
+param subnetAgentAddressPrefix string
+
 var location = 'canadacentral'
 
 /* 
@@ -44,6 +47,17 @@ module nsgapp 'br/public:avm/res/network/network-security-group:0.5.0' = {
   }
 }
 
+module nsgvm 'br/public:avm/res/network/network-security-group:0.5.0' = {
+  name: 'nsgvm'
+  scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    rg
+  ]
+  params: {
+    name: 'nsg-jumpbox'
+  }
+}
+
 module vnet 'br/public:avm/res/network/virtual-network:0.5.4' = {
   name: 'vnetapps'
   scope: resourceGroup(resourceGroupName)
@@ -64,6 +78,11 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.4' = {
         name: 'snet-pe'
         addressPrefix: subnetPrivateEndpointAddressPrefix
         networkSecurityGroupResourceId: nsgapp.outputs.resourceId
+      }
+      {
+        name: 'snet-agent'
+        addressPrefix: subnetAgentAddressPrefix
+        networkSecurityGroupResourceId: nsgvm.outputs.resourceId
       }
     ]
   }
@@ -115,5 +134,11 @@ module backend 'br/public:avm/res/web/site:0.15.0' = {
     name: 'back-${suffix}'
     kind: 'app,linux'
     serverFarmResourceId: aspbackend.outputs.resourceId
+    publicNetworkAccess: 'Disabled'
+    privateEndpoints: [
+      {
+        subnetResourceId: vnet.outputs.subnetResourceIds[1]
+      }
+    ]
   }
 }
