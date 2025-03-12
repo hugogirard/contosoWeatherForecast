@@ -1,3 +1,8 @@
+targetScope = 'subscription'
+
+@description('The name of the resource group')
+param resourceGroupName string
+
 @description('The name of the virtual network that will contains the apps')
 param vnetName string
 
@@ -10,21 +15,41 @@ param subnetVnetIntegrationAddressPrefix string
 @description('The subnet for the private endpoint of the address prefix')
 param subnetPrivateEndpointAddressPrefix string
 
+var location = 'canadacentral'
+
+/* 
+  Creating resource group
+*/
+
+module rg 'br/public:avm/res/resources/resource-group:0.4.1' = {
+  name: 'rg'
+  params: {
+    name: resourceGroupName
+    location: location
+  }
+}
+
 /* 
   Creating virtual network and subnets
 */
 
 module nsgapp 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: 'nsg-apps'
+  name: 'nsgapps'
+  scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    rg
+  ]
   params: {
     name: 'nsg-app'
   }
 }
 
 module vnet 'br/public:avm/res/network/virtual-network:0.5.4' = {
-  name: 'vnet-apps'
+  name: 'vnetapps'
+  scope: resourceGroup(resourceGroupName)
   params: {
     name: vnetName
+    location: location
     addressPrefixes: [
       vnetAddressPrefix
     ]
@@ -41,5 +66,34 @@ module vnet 'br/public:avm/res/network/virtual-network:0.5.4' = {
         networkSecurityGroupResourceId: nsgapp.outputs.resourceId
       }
     ]
+  }
+}
+
+/* 
+  Creating two web apps (backend and frontend) with
+  two app service plan
+*/
+
+var suffix = uniqueString(rg.outputs.resourceId)
+
+module aspfront 'br/public:avm/res/web/serverfarm:0.4.1' = {
+  name: 'aspfrontend'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    name: 'asp-back-${suffix}'
+    kind: 'linux'
+    skuCapacity: 1
+    skuName: 'Basic'
+  }
+}
+
+module aspbackend 'br/public:avm/res/web/serverfarm:0.4.1' = {
+  name: 'aspbackend'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    name: 'asp-front-${suffix}'
+    kind: 'linux'
+    skuCapacity: 1
+    skuName: 'Basic'
   }
 }

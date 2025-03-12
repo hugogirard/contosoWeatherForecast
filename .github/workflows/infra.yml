@@ -1,0 +1,42 @@
+name: Create Azure Resources
+
+on:
+  push:
+    paths:
+      - 'infra/main.bicep'    
+      - '.github/workflows/infra.yml'
+  workflow_dispatch:    
+
+
+jobs:
+  create-azure-resources:
+
+    env:
+      REGION: 'canadacentral' # You can change this to reflect the region where you deploy your Accelerator
+      AZURE_CORE_OUTPUT: 'none'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: Azure/login@v2        
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: deploy
+        id: createResources
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          scope: subscription
+          region: ${{ env.REGION }}
+          deploymentName:  ${{ github.run_id }}
+          template: ./infra/main.bicep
+          parameters: ./infra/main.bicepparam
+                        
+
+
+    
