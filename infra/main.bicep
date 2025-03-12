@@ -79,6 +79,9 @@ var suffix = uniqueString(rg.outputs.resourceId)
 module aspfront 'br/public:avm/res/web/serverfarm:0.4.1' = {
   name: 'aspfrontend'
   scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    rg
+  ]
   params: {
     name: 'asp-back-${suffix}'
     kind: 'linux'
@@ -90,10 +93,33 @@ module aspfront 'br/public:avm/res/web/serverfarm:0.4.1' = {
 module aspbackend 'br/public:avm/res/web/serverfarm:0.4.1' = {
   name: 'aspbackend'
   scope: resourceGroup(resourceGroupName)
+  dependsOn: [
+    rg
+  ]
   params: {
     name: 'asp-front-${suffix}'
     kind: 'linux'
     skuCapacity: 1
     skuName: 'B2'
+  }
+}
+
+module webfront 'br/public:avm/res/web/site:0.15.0' = {
+  scope: resourceGroup(resourceGroupName)
+  name: 'webfront'
+  params: {
+    name: 'front-${suffix}'
+    kind: 'app,linux'
+    serverFarmResourceId: aspfront.outputs.resourceId
+  }
+}
+
+module backend 'br/public:avm/res/web/site:0.15.0' = {
+  scope: resourceGroup(resourceGroupName)
+  name: 'backend'
+  params: {
+    name: 'back-${suffix}'
+    kind: 'app,linux'
+    serverFarmResourceId: aspbackend.outputs.resourceId
   }
 }
