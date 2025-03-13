@@ -135,7 +135,7 @@ module backend 'br/public:avm/res/web/site:0.15.0' = {
     name: 'back-${suffix}'
     kind: 'app,linux'
     serverFarmResourceId: aspbackend.outputs.resourceId
-    publicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
     privateEndpoints: [
       {
         subnetResourceId: vnet.outputs.subnetResourceIds[1]
@@ -161,3 +161,9 @@ module privateDnsZoneweb 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
     ]
   }
 }
+
+@description('The name of the web app frontend')
+output frontEndName string = webfront.outputs.name
+
+@description('The name of the backend front end')
+output backEndName string = backend.outputs.name

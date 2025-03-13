@@ -37,6 +37,14 @@ jobs:
           template: ./infra/main.bicep
           parameters: ./infra/main.bicepparam
                         
+      - name: Save secrets GH
+        uses: kornicameister/gh-secrets-action@master
+        with:
+          repository: kornicameister/gh-secrets-action
+          token: ${{ secrets.GH_PA_TOKEN }}
+          secrets: |
+            frontEndName: ${{ steps.createResources.outputs.frontEndName }}
+            backEndName: ${{ steps.createResources.outputs.backEndName }}          
 
 
     
