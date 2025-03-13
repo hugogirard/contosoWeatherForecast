@@ -29,6 +29,8 @@ app.MapGet("api/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast");
 
+app.MapHealthChecks("/healthz");
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
