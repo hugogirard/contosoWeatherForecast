@@ -129,7 +129,7 @@ module webfront 'br/public:avm/res/web/site:0.15.0' = {
       alwaysOn: true
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
-      linuxFxVersion: 'DOTNETCORE|8.0'
+      linuxFxVersion: 'DOTNETCORE|9.0'
       numberOfWorkers: 1
     }
   }
@@ -147,7 +147,7 @@ module backend 'br/public:avm/res/web/site:0.15.0' = {
       alwaysOn: true
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
-      linuxFxVersion: 'DOTNETCORE|8.0'
+      linuxFxVersion: 'DOTNETCORE|9.0'
       numberOfWorkers: 1
     }
     privateEndpoints: [
