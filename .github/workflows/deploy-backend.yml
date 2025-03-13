@@ -8,8 +8,8 @@ on:
     workflow_dispatch:   
 
 env:
-  AZURE_WEBAPP_NAME: ${{ secrets.BACK_END_NAME }}    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: './src/backend'      # set this to the path to your web app project, defaults to the repository root
+  CODE_DIR: './src/backend'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: 'app'      # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '9.0.x'           # set this to the dot net version to use
 
 jobs:
@@ -36,15 +36,15 @@ jobs:
         run: |
           dotnet restore
           dotnet build --configuration Release
-          dotnet publish -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp' 
-        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          dotnet publish -c Release --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}' 
+        working-directory: ${{ env.CODE_DIR }}
           
       # Deploy to Azure Web apps
       - name: 'Run Azure webapp deploy action using publish profile credentials'
         uses: azure/webapps-deploy@v3
         with: 
-          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
-          package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+          app-name: ${{ secrets.BACK_END_NAME }} # Replace with your app name
+          package: '${{ env.CODE_DIR }}/${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       
       - name: logout
         run: |
