@@ -125,6 +125,13 @@ module webfront 'br/public:avm/res/web/site:0.15.0' = {
     kind: 'app,linux'
     serverFarmResourceId: aspfront.outputs.resourceId
     virtualNetworkSubnetId: vnet.outputs.subnetResourceIds[0]
+    siteConfig: {
+      alwaysOn: true
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
+      linuxFxVersion: 'DOTNETCORE|8.0'
+      numberOfWorkers: 1
+    }
   }
 }
 
@@ -140,10 +147,8 @@ module backend 'br/public:avm/res/web/site:0.15.0' = {
       alwaysOn: true
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
-      metadata: {
-        name: 'CURRENT_STACK'
-        value: 'dotnetcore'
-      }
+      linuxFxVersion: 'DOTNETCORE|8.0'
+      numberOfWorkers: 1
     }
     privateEndpoints: [
       {
