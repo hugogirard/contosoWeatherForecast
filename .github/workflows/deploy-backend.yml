@@ -1,10 +1,10 @@
 name: Deploy Backend
 
 on:
-    # push:
-    #     paths:
-    #     - 'src/backend/*'    
-    #     - '.github/workflows/deploy-backend.yml'
+    push:
+        paths:
+        - 'src/backend/*'    
+        - '.github/workflows/deploy-backend.yml'
     workflow_dispatch:   
 
 env:
