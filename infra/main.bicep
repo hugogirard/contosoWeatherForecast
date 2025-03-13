@@ -136,6 +136,15 @@ module backend 'br/public:avm/res/web/site:0.15.0' = {
     kind: 'app,linux'
     serverFarmResourceId: aspbackend.outputs.resourceId
     publicNetworkAccess: 'Enabled'
+    siteConfig: {
+      alwaysOn: true
+      ftpsState: 'FtpsOnly'
+      minTlsVersion: '1.2'
+      metadata: {
+        name: 'CURRENT_STACK'
+        value: 'dotnetcore'
+      }
+    }
     privateEndpoints: [
       {
         subnetResourceId: vnet.outputs.subnetResourceIds[1]
